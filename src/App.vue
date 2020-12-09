@@ -5,7 +5,11 @@
     <b-container class="bv-example-row">
       <b-row>
         <b-col sm="6" offset-sm="3">
-          <QuestionsList :currentQuestion="questions[index]" />
+          <QuestionsList 
+            v-if="questions.length"
+            :currentQuestion="questions[index]" 
+            :next="next"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -25,10 +29,15 @@ export default {
   data() {
     return {
       questions: [],
-      index: 0
+      index: 0,
     }
   },
-  mounted: function() {
+  methods: {
+    next() {
+      this.index++;
+    }
+  },
+  mounted() {
     fetch("https://opentdb.com/api.php?amount=10&type=multiple", {
       method: "GET"
     })

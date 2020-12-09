@@ -7,20 +7,37 @@
 
       <hr class="my-4">
 
-      <p>
-        List of answers
-      </p>
+      <ul>
+        <li 
+          v-for="(answer, index) in answers"
+          :key="index"
+          >
+          {{ answer }}
+        </li>
+      </ul>
 
       <b-button variant="primary" href="#">Submit</b-button>
-      <b-button variant="success" href="#">Next</b-button>
+      <b-button @click="next" variant="success" href="#">Next</b-button>
     </b-jumbotron>
   </div>
 </template>
 
 <script>
-export default {
-  props: {
-    currentQuestion: Object
+  export default {
+    props: {
+      currentQuestion: {
+        type: Object,
+      },
+      next: {
+        type: Function
+      }
+    },
+    computed: {
+      answers() {
+        let answers = [...this.currentQuestion.incorrect_answers];
+        answers.push(this.currentQuestion.correct_answer);
+        return answers;
+      }
+    }
   }
-}
 </script>
