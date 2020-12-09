@@ -1,4 +1,4 @@
-# tut
+# tutorial
 
 ## Project setup
 ```
