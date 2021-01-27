@@ -1,14 +1,16 @@
 <template>
   <div id="app">
-    <Header />
+    <Header :score="score" :questionsAnswered="questionsAnswered" />
 
     <b-container class="bv-example-row">
       <b-row>
         <b-col sm="6" offset-sm="3">
-          <QuestionsList 
+          <QuestionsList
             v-if="questions.length"
-            :currentQuestion="questions[index]" 
+            :currentQuestion="questions[index]"
             :next="next"
+            :incrementScore="incrementScore"
+            :incrementQuestionsAnswered="incrementQuestionsAnswered"
           />
         </b-col>
       </b-row>
@@ -17,35 +19,46 @@
 </template>
 
 <script>
-import Header from "./components/Header";
-import QuestionsList from "./components/QuestionsList";
+import Header from './components/Header';
+import QuestionsList from './components/QuestionsList';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Header,
-    QuestionsList
+    QuestionsList,
   },
   data() {
     return {
       questions: [],
       index: 0,
-    }
+      score: 0,
+      questionsAnswered: 0,
+      hasSubmitted: false,
+    };
   },
   methods: {
     next() {
       this.index++;
-    }
+    },
+    incrementScore() {
+      this.score++;
+    },
+    incrementQuestionsAnswered() {
+      this.questionsAnswered++;
+    },
   },
   mounted() {
-    fetch("https://opentdb.com/api.php?amount=10&type=multiple", {
-      method: "GET"
+    const ANSWER_AMOUNT = 10;
+
+    fetch(`https://opentdb.com/api.php?amount=${ANSWER_AMOUNT}&type=multiple`, {
+      method: 'GET',
     })
-    .then(res => res.json() )
-    .then(data => {
-      this.questions = data.results;
-    })
-  }
+      .then(res => res.json())
+      .then(data => {
+        this.questions = data.results;
+      });
+  },
 };
 </script>
 
