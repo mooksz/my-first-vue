@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header :score="score" :questionsAnswered="questionsAnswered" />
+    <Header :score="score" :questionsAnswered="index" />
 
     <b-container class="bv-example-row">
       <b-row>
@@ -11,6 +11,7 @@
             :next="next"
             :incrementScore="incrementScore"
             :incrementQuestionsAnswered="incrementQuestionsAnswered"
+            :showNextButton="amountOfQuestions === index + 1 ? false : true"
           />
         </b-col>
       </b-row>
@@ -33,8 +34,8 @@ export default {
       questions: [],
       index: 0,
       score: 0,
-      questionsAnswered: 0,
       hasSubmitted: false,
+      amountOfQuestions: 3,
     };
   },
   methods: {
@@ -49,9 +50,7 @@ export default {
     },
   },
   mounted() {
-    const ANSWER_AMOUNT = 10;
-
-    fetch(`https://opentdb.com/api.php?amount=${ANSWER_AMOUNT}&type=multiple`, {
+    fetch(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}&type=multiple`, {
       method: 'GET',
     })
       .then(res => res.json())

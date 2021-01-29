@@ -7,12 +7,12 @@
 
       <hr class="my-4" />
 
-      <b-list-group>
+      <b-list-group :class="hasSubmitted ? 'submitted' : null">
         <b-list-group-item
           v-for="(answer, index) in answers"
           :key="index"
           @click="selectAnswer(index)"
-          :class="[selectedAnswerIndex === index ? 'list-group-item--selected' : null]"
+          :class="answerClass(index)"
         >
           {{ answer }}
         </b-list-group-item>
@@ -21,7 +21,7 @@
       <b-button variant="primary" @click="submitAnswer" :disabled="selectedAnswerIndex === null || hasSubmitted"
         >Submit</b-button
       >
-      <b-button @click="next" variant="success" :disabled="!hasSubmitted">Next</b-button>
+      <b-button v-if="showNextButton" @click="next" variant="success" :disabled="!hasSubmitted">Next</b-button>
     </b-jumbotron>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
     next: Function,
     incrementScore: Function,
     incrementQuestionsAnswered: Function,
+    showNextButton: Boolean,
   },
   data() {
     return {
@@ -70,6 +71,26 @@ export default {
       }
 
       this.incrementQuestionsAnswered();
+    },
+    answerClass(index) {
+      const baseClass = 'list-group-item--';
+
+      //Has not submitted yet and is select
+      if (!this.hasSubmitted && this.selectedAnswerIndex === index) {
+        return `${baseClass}selected`;
+      }
+
+      //Has submitted, this is the correct answer
+      if (this.hasSubmitted && this.correctAnswerIndex === index) {
+        return `${baseClass}correct`;
+      }
+
+      //Has submitted and this one was selected, but it was wrong
+      if (this.hasSubmitted && this.correctAnswerIndex !== index && this.selectedAnswerIndex === index) {
+        return `${baseClass}incorrect`;
+      }
+
+      return null;
     },
   },
   computed: {
@@ -109,17 +130,25 @@ export default {
   cursor: pointer;
 }
 
-.list-group-item.list-group-item--selected {
+.submitted .list-group-item:hover {
+  background-color: #fff;
+  cursor: default;
+}
+
+.list-group-item.list-group-item--selected,
+.list-group-item.list-group-item--selected:hover {
   background-color: #007bff;
   color: #fff;
 }
 
-.list-group-item.list-group-item--correct {
+.list-group-item.list-group-item--correct,
+.list-group-item.list-group-item--correct:hover {
   background-color: #28a745;
   color: #fff;
 }
 
-.list-group-item.list-group-item--incorrect {
+.list-group-item.list-group-item--incorrect,
+.list-group-item.list-group-item--incorrect:hover {
   background-color: #dc3545;
   color: #fff;
 }
